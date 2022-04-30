@@ -1,5 +1,5 @@
 import NavBar from "./NavBar"
-import GameArea from "./gameArea"
+import GameArea from "./GameArea"
 
 export default function Home() {
     return (

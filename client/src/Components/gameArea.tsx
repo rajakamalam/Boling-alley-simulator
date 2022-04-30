@@ -6,7 +6,7 @@ import './Styles/gameArea.css'
 import { getGameTotal, updateStateValues } from '../Redux-data/action'
 import { InitialState } from '../Types/types'
 
-export default function gameArea() {
+export default function GameArea() {
     localStorage.clear();
     const dispatch = useDispatch()
 
