@@ -6,9 +6,6 @@ export default function Home() {
         <div>
             <NavBar />
             <GameArea />
-
-
         </div>
-
     );
 }
