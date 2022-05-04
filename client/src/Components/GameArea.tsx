@@ -55,8 +55,8 @@ export default function GameArea() {
     }
 
     const selectRollValue = (rollValue: number) => {
-        if (rollValue < 10 && index < 19) {
-            // Populate the data when frame [1 - 9] and frame 10 roll-1.
+        if (rollValue < 10 && index < 18) {
+            // Populate the data when frame [1 - 9].
             frameValues.frameData.rollIndex = index + 1
             frameValues.frameData.strike = false
             frameValues.frameData.currentRoll = rollValue
@@ -64,8 +64,8 @@ export default function GameArea() {
             frameValues.frameData.historicRolls.push(rollValue)
             frameValues.frameData.frameTotals = frameValues.frameData.frameTotals
             frameValues.frameData.gameTotal = frameValues.frameData.gameTotal
-        } else if (rollValue === 10 && index < 19) {
-            // Populate the data when frame [1 - 9] and frame 10 roll-1.
+        } else if (rollValue === 10 && index < 18) {
+            // Populate the data when frame [1 - 9].
             frameValues.frameData.rollIndex = index + 2
             frameValues.frameData.strike = false
             frameValues.frameData.currentRoll = rollValue
@@ -75,9 +75,9 @@ export default function GameArea() {
             frameValues.frameData.historicRolls.push(0)
             frameValues.frameData.frameTotals = frameValues.frameData.frameTotals
             frameValues.frameData.gameTotal = frameValues.frameData.gameTotal
-        } else if (index === 19) {
-            // Populate the data when frame is 10 and roll-2.
-            frameValues.frameData.rollIndex = index + 2
+        } else if (index === 19 || index === 18) {
+            // Populate the data when frame is 10 for roll-1 or roll-2.
+            frameValues.frameData.rollIndex = index + 1
             frameValues.frameData.strike = false
             frameValues.frameData.currentRoll = rollValue
             frameValues.frameData.historicRolls = frameValues.frameData.historicRolls

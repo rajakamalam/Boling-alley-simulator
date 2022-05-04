@@ -1,2 +1,16 @@
 ###
 GET http://localhost:5000
+
+###
+POST http://localhost:5000
+Content-Type: application/json
+
+{
+    "currentRoll": 2,
+    "historicRolls": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "rollIndex": 20,
+    "strike": false,
+    "frameTotals": [],
+    "gameTotal": 0,
+        
+}

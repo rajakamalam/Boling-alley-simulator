@@ -2,35 +2,47 @@ export const calculate = async (req, res, next) => {
     try {
         const frameData = req.body
         var historicRolls = frameData.historicRolls
+        var frameTotals = frameData.frameTotals
+        var currentFrameTotal = 0
         var total = 0
 
-        //Calculate game total:
+        //Split the historic rolls array into frames:
         for (var i = 0; i < historicRolls.length; i++) {
-            if (i < historicRolls.length - 3) {
-                //Strike
-                if (historicRolls[i] == 10) {
-                    if (historicRolls[i + 2] == 10) {
-                        total += historicRolls[i] + historicRolls[i + 2] + historicRolls[i + 3] + historicRolls[i + 4]
+            currentFrameTotal = 0
+            if (i === 20 || i === 19 || i === 18) {
+                currentFrameTotal += historicRolls[i]
+                frameData.frameTotals.push(currentFrameTotal)
+            } else if (i % 2 !== 0) {
+                //Frame with strike
+                if (historicRolls[i] === 10 || historicRolls[i - 1] === 10) { //B2 of frame n is 10
+                    if (historicRolls[i + 1] === 10) { //Consequent strike
+                        if ((i + 3) < historicRolls.length) {
+                            currentFrameTotal = historicRolls[i - 1] + historicRolls[i] + historicRolls[i + 1] + historicRolls[i + 3]
+                            frameData.frameTotals.push(currentFrameTotal)
+                        }
+                    } else { //Next ball is not a strike
+                        if ((i + 2) < historicRolls.length) {
+                            currentFrameTotal = historicRolls[i - 1] + historicRolls[i] + historicRolls[i + 1] + historicRolls[i + 2]
+                            frameData.frameTotals.push(currentFrameTotal)
+                        }
                     }
-                    else {
-                        total += historicRolls[i] + historicRolls[i + 2] + historicRolls[i + 3]
+                } else if (historicRolls[i] < 10 && historicRolls[i - 1] < 10) {
+                    if (historicRolls[i] + historicRolls[i - 1] == 10) {
+                        //Frame with spare
+                        currentFrameTotal = historicRolls[i - 1] + historicRolls[i] + historicRolls[i + 1]
+                        frameData.frameTotals.push(currentFrameTotal)
+                    } else {
+                        //Frame without strike or spare
+                        currentFrameTotal = historicRolls[i - 1] + historicRolls[i]
+                        frameData.frameTotals.push(currentFrameTotal)
                     }
                 }
-                //Regular
-                else if (historicRolls[i] < 10) {
-                    total += historicRolls[i]
-                }
-                //Spare
-                // else if (i != 0 && i % 2 != 0 && (historicRolls[i] + historicRolls[i - 1]) == 10) {
-                //     total += historicRolls[i] + historicRolls[i + 1]
-                // }
             }
-            else {
-                if (historicRolls[i] == 10) {
-                    total += historicRolls[i]
-                }
+        }
 
-            }
+        //Calculate game total with frame totals array
+        for (var j = 0; j < frameTotals.length; j++) {
+            total += frameTotals[j]
         }
         frameData.gameTotal = total
         res.json(frameData)
@@ -42,73 +54,3 @@ export const calculate = async (req, res, next) => {
         }
     }
 }
-
-
-
-
-
-
-
-/*
-        var currentRoll = frameData.currentRoll
-        var historicRolls = frameData.historicRolls
-        var strike = frameData.strike
-        var rollIndex = frameData.rollIndex //nth ball rolled
- 
-        //1. Frame total if no bonus points involved
-        if (historicRolls.length % 2 == 0 && !strike) { //calculate frame total for every second ball
-            if (historicRolls[rollIndex - 3] == 10) {
-                //Bonus calculation
-                frameData.currentFrameTotal = historicRolls[rollIndex - 2] + currentRoll
-                frameData.previousframeTotal = historicRolls[rollIndex - 3] + historicRolls[rollIndex - 2] + currentRoll
-                frameData.frameTotals.push(frameData.currentFrameTotal)
-                frameData.frameTotals.push(frameData.previousframeTotal)
-            }
-            else if (historicRolls[rollIndex - 2] + currentRoll == 10) {
- 
-            }
-            else {
-                frameData.currentFrameTotal = historicRolls[rollIndex - 2] + currentRoll
-                frameData.frameTotals.push(frameData.currentFrameTotal)
-            }
-        }
- 
- 
- 
-        /*
-                //Enter on every 2nd ball
-                if (frameData.historicRolls.length % 2 != 0) {
-                    if (currentRoll < 10) {
-                        //Push the value into array
-                        historicRoll.push(currentRoll)
-                        //Calculate frame total and bonus points
-                        if (historicRoll[historicRoll.length - 2] == 10) {
-                            previousFrameTotal = historicRoll[historicRoll.length - 2] + historicRoll[historicRoll.length - 1] + historicRoll[historicRoll.length]
-                            currentFrameTotal = historicRoll[historicRoll.length - 1] + historicRoll[historicRoll.length]
-                        }
-                        else if (historicRoll[historicRoll.length - 3] + historicRoll[historicRoll.length - 2] == 10) {
-                            previousFrameTotal = historicRoll[historicRoll.length - 3] + historicRoll[historicRoll.length - 2] + historicRoll[historicRoll.length - 1]
-                            currentFrameTotal = historicRoll[historicRoll.length - 1] + historicRoll[historicRoll.length]
-                        }
-                        else {
-                            currentFrameTotal = historicRoll[historicRoll.length - 1] + historicRoll[historicRoll.length]
-                        }
-                    }
-                }
-                else if (currentFrameBall == 10) {
-                    finalTotal = 0
-                    for (let i = 0; i < historicRoll.length; i++) {
-                        finalTotal += historicRoll[i];
-                    }
-                }
-                else {
-                    if (currentRoll < 10) {
-                        //Push the value into array
-                        historicRoll.push(currentRoll)
-                    }
-                    else if (currentRoll == 10) {
-                        historicRoll.push(0)
-                        historicRoll.push(10)
-                        console.log(historicRoll)
-                    }
-                }*/

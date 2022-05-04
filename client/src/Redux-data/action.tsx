@@ -3,7 +3,6 @@ import axios from 'axios'
 
 import { SelectedRoll, Frame } from "../Types/types"
 
-//For each roll
 export function selectedRollValue(frameData: Frame): SelectedRoll {
     return {
         type: "SELECTED_ROLL",
@@ -26,10 +25,7 @@ export function getGameTotal(frameData: Frame) {
 
         }).then(response => {
             let data = response.data
-            console.log("Checking response after calculation")
-            console.log(data)
             dispatch(selectedRollValue(data))
-
         })
     }
 }
